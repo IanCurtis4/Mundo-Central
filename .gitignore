@@ -1,5 +1,12 @@
-/audio
+# Assets RTP grandes que não queremos versionar inicialmente
+/audio/
 
-/img
+# Saves locais
+/save/
 
-/icon
+# Deploys/builds
+/www/
+
+# OS/editor
+.DS_Store
+Thumbs.db
