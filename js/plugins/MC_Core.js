@@ -38,14 +38,14 @@ var MC = MC || {};
 
     MC.Spawns = Object.freeze({
         STARTING_TAVERN: Object.freeze({
-            WAKE_UP: Object.freeze({ x: 8, y: 6, direction: 2 })
+            WAKE_UP: Object.freeze({ x: 8, y: 9, direction: 2 })
         }),
         STARTING_VILLAGE: Object.freeze({
-            TAVERN_DOOR: Object.freeze({ x: 20, y: 16, direction: 2 }),
-            SOUTH_GATE: Object.freeze({ x: 20, y: 30, direction: 8 })
+            TAVERN_DOOR: Object.freeze({ x: 19, y: 8, direction: 2 }),
+            SOUTH_GATE: Object.freeze({ x: 22, y: 31, direction: 8 })
         }),
         CENTRAL_REGION: Object.freeze({
-            STARTING_VILLAGE: Object.freeze({ x: 40, y: 43, direction: 8 })
+            STARTING_VILLAGE: Object.freeze({ x: 39, y: 34, direction: 8 })
         })
     });
 
