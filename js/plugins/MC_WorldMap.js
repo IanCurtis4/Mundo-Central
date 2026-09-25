@@ -79,7 +79,7 @@ var MC = MC || {};
         var y = 72;
         var h = Graphics.boxHeight - y - 168;
         this._commandWindow = new Window_MCWorldMapCommand(0, y, 320, h);
-        this._commandWindow.setHandler('ok', this.onLocationOk.bind(this));
+        this._commandWindow.setHandler('location', this.onLocationOk.bind(this));
         this._commandWindow.setHandler('cancel', this.popScene.bind(this));
         this._commandWindow.setHelpWindow(null);
         this._commandWindow.setChangeHandler(this.refreshInfo.bind(this));
