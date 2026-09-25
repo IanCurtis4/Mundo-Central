@@ -42,10 +42,10 @@ var MC = MC || {};
         }),
         STARTING_VILLAGE: Object.freeze({
             TAVERN_DOOR: Object.freeze({ x: 20, y: 16, direction: 2 }),
-            SOUTH_GATE: Object.freeze({ x: 20, y: 31, direction: 8 })
+            SOUTH_GATE: Object.freeze({ x: 20, y: 30, direction: 8 })
         }),
         CENTRAL_REGION: Object.freeze({
-            STARTING_VILLAGE: Object.freeze({ x: 40, y: 39, direction: 2 })
+            STARTING_VILLAGE: Object.freeze({ x: 40, y: 43, direction: 8 })
         })
     });
 
