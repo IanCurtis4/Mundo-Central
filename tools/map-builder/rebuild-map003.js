@@ -82,23 +82,45 @@ function loadMap() {
 function normalizeWorldLayers(map) {
     // World_A2 geography must sit above a grass underpaint; otherwise its
     // transparent edge pixels reveal empty white background in the editor/game.
-    for (let y = 0; y < map.height; y++) {
+    //
+    // Detect the legacy layout before shifting layers so this script is safe
+    // to run again on an already-normalized Map003.
+    let legacyLayout = false;
+    for (let y = 0; y < map.height && !legacyLayout; y++) {
         for (let x = 0; x < map.width; x++) {
             const l0 = map.data[map.index(x, y, 0)];
-            const l1 = map.data[map.index(x, y, 1)];
-            const l2 = map.data[map.index(x, y, 2)];
-            const l3 = map.data[map.index(x, y, 3)];
+            if (l0 && l0 !== Tile.WORLD_GRASS) {
+                legacyLayout = true;
+                break;
+            }
+        }
+    }
 
-            map.set(x, y, 0, Tile.WORLD_GRASS);
-            map.set(x, y, 1, l0 === Tile.WORLD_GRASS ? 0 : l0);
-            map.set(x, y, 2, l1 || 0);
-            map.set(x, y, 3, l3 || l2 || 0);
+    for (let y = 0; y < map.height; y++) {
+        for (let x = 0; x < map.width; x++) {
+            if (legacyLayout) {
+                const l0 = map.data[map.index(x, y, 0)];
+                const l1 = map.data[map.index(x, y, 1)];
+                const l2 = map.data[map.index(x, y, 2)];
+                const l3 = map.data[map.index(x, y, 3)];
+
+                map.set(x, y, 0, Tile.WORLD_GRASS);
+                map.set(x, y, 1, l0 === Tile.WORLD_GRASS ? 0 : l0);
+                map.set(x, y, 2, l1 || 0);
+                map.set(x, y, 3, l3 || l2 || 0);
+            } else {
+                map.set(x, y, 0, Tile.WORLD_GRASS);
+            }
+
+            // Region collision masks are regenerated below from the visible
+            // setpieces, so stale masks never accumulate between rebuilds.
             map.setRegion(x, y, 0);
         }
     }
 }
 
 function buildRethGate(map) {
+    clearRect(map, 0, 26, 18, 17, 1);
     clearRect(map, 0, 26, 18, 17, 2);
 
     const upper = rect(0, 0, 15, 32);
@@ -127,6 +149,7 @@ function buildRethGate(map) {
 }
 
 function buildClayGate(map) {
+    clearRect(map, 63, 17, 17, 13, 1);
     clearRect(map, 63, 17, 17, 13, 2);
 
     const upper = rect(72, 0, 8, 20);
