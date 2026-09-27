@@ -28,7 +28,14 @@ var MC = MC || {};
 (function() {
     'use strict';
 
-    MC.VERSION = '0.1.0';
+    MC.VERSION = '0.2.0';
+
+    // Region 1 is reserved for invisible collision masks placed under visible
+    // terrain (dense forest, unstable ground, etc.). It lets world-map setpieces
+    // control traversal without relying on dozens of blank blocking events.
+    MC.Regions = Object.freeze({
+        BLOCKED: 1
+    });
 
     MC.Maps = Object.freeze({
         STARTING_TAVERN: 1,
@@ -48,10 +55,18 @@ var MC = MC || {};
             STARTING_VILLAGE: Object.freeze({ x: 39, y: 34, direction: 8 }),
             VILLAGE_WEST: Object.freeze({ x: 37, y: 34, direction: 6 }),
             VILLAGE_EAST: Object.freeze({ x: 43, y: 32, direction: 4 }),
-            RETH_RETURN: Object.freeze({ x: 13, y: 34, direction: 4 }),
-            CLAY_RETURN: Object.freeze({ x: 66, y: 26, direction: 6 })
+            RETH_RETURN: Object.freeze({ x: 14, y: 34, direction: 4 }),
+            CLAY_RETURN: Object.freeze({ x: 68, y: 25, direction: 6 })
         })
     });
+
+    var _Game_Map_isPassable = Game_Map.prototype.isPassable;
+    Game_Map.prototype.isPassable = function(x, y, d) {
+        if (this.regionId(x, y) === MC.Regions.BLOCKED) {
+            return false;
+        }
+        return _Game_Map_isPassable.call(this, x, y, d);
+    };
 
     MC.mapId = function(mapKey) {
         var id = MC.Maps[String(mapKey || '').toUpperCase()];
