@@ -120,10 +120,15 @@ A descoberta de um ponto e a capacidade de viajar rapidamente até ele não prec
 
 ## Aplicação ao recorte inicial
 
-O primeiro slice deve introduzir essa filosofia de forma modesta.
+O primeiro slice introduz essa filosofia de forma modesta já nas rotas que deixam a Vila da Encruzilhada.
 
-A Vila da Encruzilhada e as Pradarias de Veyru devem conter pelo menos um caminho ou ponto de interesse que o jogador possa ver cedo mas não explorar completamente.
+A vila não bloqueia artificialmente suas estradas oeste e leste: ambas levam normalmente ao mapa regional das Pradarias de Veyru.
 
-O bloqueio deve ser diegético e compreensível, não uma simples mensagem de "esta área ainda não está disponível".
+A progressão para além do recorte é contida por dois soft gates de naturezas diferentes:
 
-Esse primeiro exemplo será usado como protótipo para os gates leves das regiões posteriores.
+- **Dobra de Reth / rota para Revin — conhecimento.** A estrada ocidental dobra a própria distância e devolve viajantes ao mesmo marco. O jogador pode tentar atravessar e experimentar o fenômeno diretamente. Uma rota marcada, técnica de coerência ou conhecimento equivalente poderá resolver o gate posteriormente.
+- **Veio de Argila Viva / rota para Manum — logística e leitura de terreno.** Um curso de solo semifluido atravessou a antiga estrada. A crosta muda de posição e engole marcos. A travessia futura depende de uma forma de sondar ou reconhecer chão firme.
+
+Nenhum dos eventos menciona "conteúdo ainda não disponível", "corte vertical" ou outra justificativa extradiegética.
+
+Esses dois gates funcionam como protótipos: um ensina que **conhecimento muda a navegabilidade do mundo**; o outro, que **ferramentas e preparação física também são progressão**.
