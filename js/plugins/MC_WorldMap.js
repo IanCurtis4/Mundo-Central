@@ -28,8 +28,9 @@ var MC = MC || {};
         {
             key: 'STARTING_VILLAGE',
             name: 'Vila da Encruzilhada',
-            region: 'Terras Centrais',
+            region: 'Pradarias de Veyru',
             description: 'Uma pequena vila entre Revin e Manum. Foi aqui que o grupo despertou.',
+            status: 'ROTA SEGURA',
             enabled: true,
             mapKey: 'STARTING_VILLAGE',
             spawnKey: 'SOUTH_GATE'
@@ -37,15 +38,17 @@ var MC = MC || {};
         {
             key: 'REVIN',
             name: 'Revin',
-            region: 'Costa Ocidental',
-            description: 'Centro cosmopolita de comércio, arquivos e eter-antropologia.',
+            region: 'Baixios de Revin',
+            description: 'Porto cosmopolita. A rota oeste dobra sobre si perto de Reth.',
+            status: 'ROTA INSTÁVEL — DOBRA DE RETH',
             enabled: false
         },
         {
             key: 'MANUM',
             name: 'Manum',
-            region: 'Terras Centrais',
-            description: 'Polo de matemágica, metafísica e engenharia etérica.',
+            region: 'Planalto de Manum',
+            description: 'Centro matemágico. Um Veio de Argila Viva cortou a rota leste.',
+            status: 'ROTA INTERROMPIDA — VEIO VIVO',
             enabled: false
         }
     ];
@@ -116,7 +119,7 @@ var MC = MC || {};
         var statusY = win.contentsHeight() - 72;
         win.changeTextColor(loc.enabled ? win.textColor(3) : win.textColor(7));
         win.drawText(
-            loc.enabled ? 'ROTA DISPONÍVEL' : 'ROTA AINDA NÃO LIBERADA',
+            loc.status || (loc.enabled ? 'ROTA SEGURA' : 'ROTA DESCONHECIDA'),
             12,
             statusY,
             win.contentsWidth() - 24,
