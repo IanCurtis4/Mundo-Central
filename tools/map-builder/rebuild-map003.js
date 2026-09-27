@@ -66,6 +66,29 @@ function clearRect(map, x, y, width, height, z) {
     }
 }
 
+function expandCells(source, radius) {
+    const out = new Set();
+    source.forEach(value => {
+        const [x, y] = value.split(',').map(Number);
+        for (let dy = -radius; dy <= radius; dy++) {
+            for (let dx = -radius; dx <= radius; dx++) {
+                if (dx * dx + dy * dy <= radius * radius) {
+                    out.add(key(x + dx, y + dy));
+                }
+            }
+        }
+    });
+    return out;
+}
+
+function intersect(source, mask) {
+    const out = new Set();
+    source.forEach(value => {
+        if (mask.has(value)) out.add(value);
+    });
+    return out;
+}
+
 function loadMap() {
     const raw = JSON.parse(fs.readFileSync(MAP_PATH, 'utf8'));
     const map = new MVMapBuilder({
@@ -184,9 +207,131 @@ function buildClayGate(map) {
     map.events[3].y = 23;
 }
 
+function closeEmptyExploration(map) {
+    // Regional maps should not invite the player into large grass rectangles
+    // with nothing to find. Keep broad prairie around roads/POIs and turn the
+    // rest into readable, physically blocked geography.
+    const road = new Set();
+    const mud = new Set();
+
+    for (let y = 0; y < map.height; y++) {
+        for (let x = 0; x < map.width; x++) {
+            const l1 = map.data[map.index(x, y, 1)];
+            const l2 = map.data[map.index(x, y, 2)];
+            if (l2 >= Tile.WORLD_DIRT_ROAD && l2 < Tile.WORLD_DIRT_ROAD + 48) {
+                road.add(key(x, y));
+            }
+            if (l1 >= Tile.WORLD_DIRT_FIELD_B &&
+                l1 < Tile.WORLD_DIRT_FIELD_B + 48) {
+                mud.add(key(x, y));
+            }
+        }
+    }
+
+    // Small widening at important junctions makes roads feel deliberately
+    // composed instead of uniformly one tile wide.
+    const aprons = union(
+        ellipse(39, 32, 2.5, 2),
+        ellipse(29, 17, 2.2, 1.8),
+        ellipse(59, 44, 2.2, 1.8)
+    );
+    aprons.forEach(value => road.add(value));
+
+    // Repaint all road autotiles as one connected set.
+    for (let y = 0; y < map.height; y++) {
+        for (let x = 0; x < map.width; x++) {
+            const l2 = map.data[map.index(x, y, 2)];
+            if (l2 >= Tile.WORLD_DIRT_ROAD &&
+                l2 < Tile.WORLD_DIRT_ROAD + 48) {
+                map.set(x, y, 2, 0);
+            }
+        }
+    }
+    map.paintWorldRoad(road);
+
+    let playable = expandCells(road, 4);
+    [
+        ellipse(39, 32, 8, 7),
+        ellipse(29, 17, 5, 4),
+        ellipse(59, 44, 6, 5),
+        ellipse(71, 23, 4, 4),
+        ellipse(4, 34, 2.5, 2.5)
+    ].forEach(area => { playable = union(playable, area); });
+    playable = union(playable, expandCells(mud, 1));
+
+    const all = new Set();
+    for (let y = 0; y < map.height; y++) {
+        for (let x = 0; x < map.width; x++) all.add(key(x, y));
+    }
+
+    let curtain = subtract(all, playable);
+    curtain = subtract(curtain, mud);
+
+    // Remove previous blocker terrain before rebuilding a single coherent set.
+    for (let y = 0; y < map.height; y++) {
+        for (let x = 0; x < map.width; x++) {
+            const l1 = map.data[map.index(x, y, 1)];
+            const kind = l1 >= 2048 ? Math.floor((l1 - 2048) / 48) : -1;
+            if (kind === 20 || kind === 22 || kind === 23) map.set(x, y, 1, 0);
+            if (map.data[map.index(x, y, 5)] === BLOCKED_REGION) {
+                map.setRegion(x, y, 0);
+            }
+        }
+    }
+
+    const mountainMask = union(
+        ellipse(61, 7, 6, 4),
+        ellipse(65, 9, 5, 4),
+        ellipse(61, 12, 7, 4)
+    );
+    const hillMask = union(
+        ellipse(54, 10, 19, 8),
+        ellipse(63, 47, 15, 10),
+        ellipse(48, 55, 19, 7),
+        ellipse(67, 34, 9, 9),
+        ellipse(41, 7, 10, 5)
+    );
+
+    const mountains = intersect(curtain, mountainMask);
+    let hills = subtract(intersect(curtain, hillMask), mountains);
+    let forests = subtract(curtain, union(mountains, hills));
+
+    const extraHill = intersect(forests, union(
+        ellipse(20, 52, 8, 7),
+        ellipse(22, 6, 8, 5),
+        ellipse(74, 51, 5, 8)
+    ));
+    forests = subtract(forests, extraHill);
+    hills = union(hills, extraHill);
+
+    map.paintWorldTerrain(forests, Tile.WORLD_FOREST);
+    map.paintWorldTerrain(hills, Tile.WORLD_HILL_GRASS);
+    map.paintWorldTerrain(mountains, Tile.WORLD_MOUNTAIN_DIRT);
+
+    map.paintRegion(forests, BLOCKED_REGION);
+    map.paintRegion(hills, BLOCKED_REGION);
+    map.paintRegion(mountains, BLOCKED_REGION);
+
+    // The clay field remains traversable only up to its interaction choke.
+    mud.forEach(value => {
+        const [x, y] = value.split(',').map(Number);
+        if (x >= 72) map.setRegion(x, y, BLOCKED_REGION);
+    });
+
+    // Roads and events always win over the collision curtain.
+    road.forEach(value => {
+        const [x, y] = value.split(',').map(Number);
+        map.setRegion(x, y, 0);
+    });
+    map.events.filter(Boolean).forEach(event => {
+        map.setRegion(event.x, event.y, 0);
+    });
+}
+
 const map = loadMap();
 normalizeWorldLayers(map);
 buildRethGate(map);
 buildClayGate(map);
+closeEmptyExploration(map);
 fs.writeFileSync(MAP_PATH, JSON.stringify(map.toJSON()));
-console.log('Map003 rebuilt: underpaint + Reth loop + Living Clay choke.');
+console.log('Map003 rebuilt: underpaint + soft gates + purposeful exploration corridors.');
