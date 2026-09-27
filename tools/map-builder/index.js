@@ -90,6 +90,26 @@ class MVMapBuilder {
         return this;
     }
 
+    setRegion(x, y, regionId) {
+        return this.set(x, y, 5, regionId);
+    }
+
+    paintRegion(cells, regionId) {
+        for (const cell of cells) {
+            const [x, y] = cell.split(',').map(Number);
+            this.setRegion(x, y, regionId);
+        }
+        return this;
+    }
+
+    clearCells(cells, z) {
+        for (const cell of cells) {
+            const [x, y] = cell.split(',').map(Number);
+            this.set(x, y, z, 0);
+        }
+        return this;
+    }
+
     rect(x, y, width, height) {
         const cells = new Set();
         for (let yy = y; yy < y + height; yy++) {
@@ -135,6 +155,21 @@ class MVMapBuilder {
             cells.add(`${tx},${ty}`);
         }
         return cells;
+    }
+
+    // World_A2 forest/hill/mountain tiles have transparent edge pixels.
+    // For regional maps, keep grass on layer 0 and paint terrain on layer 1,
+    // roads on layer 2 and B/C decorations on layer 3.
+    paintWorldTerrain(cells, baseTileId, underTileId = 2816) {
+        for (const cell of cells) {
+            const [x, y] = cell.split(',').map(Number);
+            this.set(x, y, 0, underTileId);
+        }
+        return this.paintAutotile(cells, baseTileId, 1, 'floor');
+    }
+
+    paintWorldRoad(cells, baseTileId = 3440) {
+        return this.paintAutotile(cells, baseTileId, 2, 'floor');
     }
 
     paintAutotile(cells, baseTileId, z = 0, geometry = 'floor') {
@@ -212,6 +247,10 @@ const Tile = Object.freeze({
     WORLD_FOREST: 2816 + 4 * 48,
     WORLD_HILL_GRASS: 2816 + 6 * 48,
     WORLD_MOUNTAIN_DIRT: 2816 + 7 * 48,
+    WORLD_WASTELAND_A: 2816 + 8 * 48,
+    WORLD_WASTELAND_B: 2816 + 9 * 48,
+    WORLD_DIRT_FIELD_A: 2816 + 10 * 48,
+    WORLD_DIRT_FIELD_B: 2816 + 11 * 48,
     WORLD_DIRT_ROAD: 2816 + 13 * 48
 });
 
