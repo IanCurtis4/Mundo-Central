@@ -112,6 +112,13 @@ function normalizeWorldLayers(map) {
                 map.set(x, y, 0, Tile.WORLD_GRASS);
             }
 
+            // A Grassland A autotile on layer 1 is always stale underpaint from
+            // the legacy map. Layer 0 already supplies the full grass base.
+            const overlay = map.data[map.index(x, y, 1)];
+            if (overlay >= Tile.WORLD_GRASS && overlay < Tile.WORLD_GRASS + 48) {
+                map.set(x, y, 1, 0);
+            }
+
             // Region collision masks are regenerated below from the visible
             // setpieces, so stale masks never accumulate between rebuilds.
             map.setRegion(x, y, 0);
@@ -131,7 +138,10 @@ function buildRethGate(map) {
     const north = pathCells([[16,34],[14,34],[13,32],[11,31],[8,31],[6,32],[5,34]]);
     const south = pathCells([[16,34],[14,34],[13,36],[11,37],[8,37],[6,36],[5,34]]);
     const tail = pathCells([[5,34],[0,34]]);
-    const road = union(north, south, tail);
+    // Join the generated loop to the pre-existing Veyru road. Without this
+    // explicit connector, the two independently-painted paths miss by one tile.
+    const connector = pathCells([[16,34],[18,34],[18,33]]);
+    const road = union(north, south, tail, connector);
 
     const shoulder = new Set(road);
     road.forEach(value => {
