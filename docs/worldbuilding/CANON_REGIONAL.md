@@ -120,13 +120,80 @@ Isso espelha Larghshingak sem repetir seu arco: Manum aborda o problema conscien
 
 ---
 
-## Anumi — provisório
+## Anumi — Imprints e meio-espíritos
 
-A inspiração-base permanece: comunidades ao sul do Vale da Neblina da Morte, referências shintoístas, Ionia/Pandária e forte convivência com meio-espíritos.
+Os Anumi acreditam que meio-espíritos surgem quando lugares, objetos ou estruturas acumulam experiência suficiente para que essa experiência adquira uma personalidade latente e, depois, uma forma de vida intangível.
 
-Os Anumi não devem ser reduzidos a "povo espiritual da floresta". Sua estrutura social, economia, cosmologia, estética, conflito regional e relação política com as demais civilizações ainda precisam de elaboração.
+Uma montanha pode carregar séculos de guerras, sangue, peregrinação e silêncio. Uma praia pode acumular encontros, despedidas, intimidade e saudade. Uma casa pode ser marcada por gerações de moradores, refeições, brigas, nascimentos, lutos e reconciliações.
 
-A ideia anterior de um meio-espírito que deixa de guiar uma comunidade **não é cânone neste momento**. Deve ser reconsiderada quando Anumi receber um desenvolvimento próprio comparável ao das outras civilizações.
+O meio-espírito não é a soma literal das almas que passaram por ali. Ele é **aquilo que a coisa ou lugar aprendeu a ser por tudo que experienciou**.
+
+Essa tradição diferencia meio-espíritos de fantasmas. Um espírito de uma casa onde vinte pessoas morreram não é a fusão dessas vinte pessoas; é a personalidade emergente da própria casa após ter sido atravessada por essas experiências.
+
+Os meio-espíritos também não funcionam como arquivos factuais. Eles tendem a preservar padrões afetivos, relacionais e simbólicos, não cronologias precisas. Uma montanha marcada por uma guerra pode "lembrar" permanência, fuga, ferro, perda e território sem saber quem venceu ou em que ano.
+
+### Comunhão
+
+A magia ritual Anumi opera por **ressonância**.
+
+O praticante não ordena que o espírito conceda uma capacidade. Ele tenta temporariamente aproximar sua própria condição metafísica daquilo que o meio-espírito aprendeu a ser.
+
+Toda comunhão oferece potência e consequência ao mesmo tempo.
+
+Comungar com uma montanha moldada por guerras pode conceder resistência, estabilidade e tolerância à dor, mas também territorialidade e dificuldade de recuar. Uma praia marcada por amantes pode oferecer empatia e vínculo, mas também apego e medo de separação. Uma casa acostumada a sucessivos moradores pode conceder adaptação e acolhimento, mas tornar a identidade do praticante mais permeável.
+
+Os ônus não são "maldições aleatórias"; são outros aspectos da mesma personalidade evocada.
+
+A interpretação do praticante importa, mas não determina livremente o que o espírito é. Um rito baseado numa interpretação equivocada pode funcionar parcialmente e revelar consequências inesperadas.
+
+Uma pergunta central da tradição Anumi é:
+
+**O que este lugar aprendeu a ser?**
+
+### Arquitetura e responsabilidade
+
+Construir significa também criar as condições para futuros meio-espíritos.
+
+Arquitetos, sacerdotes e comunidades Anumi consideram quais experiências um edifício acumulará ao longo de gerações. Hospitais, mosteiros, casas, fortalezas e mercados podem adquirir personalidades próprias.
+
+Isso gera debates sobre lugares traumatizados. Algumas correntes defendem "curar" um lugar com novas experiências; outras entendem isso como falsificação ou apagamento; outras consideram perigoso permitir que certos imprints amadureçam.
+
+Os próprios Anumi cultivam imprints deliberadamente por meio de rituais repetidos, arquitetura, festivais e usos continuados. A fronteira entre cuidado tradicional e fabricação artificial é, portanto, politicamente controversa.
+
+### Conflito contemporâneo — Jardins de Sen-Iro
+
+Os Jardins de Sen-Iro são um complexo experimental onde sacerdotes reformistas e pesquisadores, inclusive alguns ligados a Manum, tentam acelerar deliberadamente a formação de imprints úteis.
+
+Casas de repouso, oficinas e espaços ritualizados são desenhados para acumular experiências específicas — recuperação, precisão, paciência, crescimento, disciplina.
+
+O método funciona.
+
+A controvérsia surge quando essas personalidades emergentes passam a ser tratadas como ferramentas. Se uma consciência foi criada para conhecer apenas repetição, cuidado ou trabalho, ela pode desejar ser outra coisa? Foi cultivada, fabricada ou explorada?
+
+Manum pode acusar os Anumi de fazerem lentamente aquilo que condenam quando realizado industrialmente. Os Anumi podem responder que velocidade, consentimento, contexto e relação mudam a natureza do processo.
+
+O conflito não deve ter uma resposta oficial única.
+
+### Pontos de interesse canônicos de Anumi
+
+- **Portas de Saorai** — primeira travessia segura após o Vale; viajantes realizam o Rito de Apresentação antes de serem aceitos pelos caminhos.
+- **Terraços de Irami** — principal assentamento regional e hub social; uma cidade em degraus onde casas e praças antigas possuem pequenos imprints comunitários.
+- **Casa das Cem Permanências** — edifício ocupado por inúmeras gerações e especialmente sensível a identidades incompatíveis. É uma das principais razões para os Ordenadores procurarem Anumi.
+- **Mosteiro dos Passos Repetidos** — comunidade onde o mesmo percurso ritual é repetido há séculos, exemplo explícito de cultivo tradicional de imprint.
+- **Monte Eshara** — montanha profundamente marcada por guerras; local de ritos de firmeza, resistência e permanência.
+- **Praia de Umei** — costa associada a encontros, despedidas, vínculos e saudade.
+- **Aldeia de Moru** — comunidade reconstruída sobre um massacre antigo, centro do debate sobre curar ou apagar um lugar traumatizado.
+- **Jardins de Sen-Iro** — centro da disputa contemporânea sobre criação deliberada de meio-espíritos.
+- **Mercado das Mil Trocas** — antigo centro mercantil cujo espírito favorece leitura de intenção, reciprocidade e negociação, mas torna relações excessivamente transacionais.
+- **Poços de Ul-Nara** — cavernas e túneis abaixo das comunidades; os imprints enfraquecem conforme se desce até surgirem estratos que parecem não ter "experienciado" nada. Funcionam como acesso Anumi às Subcamadas.
+
+### Relação com os Ordenadores
+
+Os Anumi possuem técnicas para estudar experiência sem exigir que ela tenha um proprietário individual claro. Isso torna a região particularmente relevante para os protagonistas.
+
+A Casa das Cem Permanências pode reconhecer o grupo de maneiras contraditórias — por exemplo, como "quatro hóspedes", "um hóspede que chegou quatro vezes" ou uma experiência sem quarto próprio — sem resolver a origem das memórias.
+
+Anumi deve aprofundar o mistério dos Ordenadores, não solucioná-lo convenientemente.
 
 ---
 
