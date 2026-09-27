@@ -45,7 +45,11 @@ var MC = MC || {};
             SOUTH_GATE: Object.freeze({ x: 22, y: 31, direction: 8 })
         }),
         CENTRAL_REGION: Object.freeze({
-            STARTING_VILLAGE: Object.freeze({ x: 39, y: 34, direction: 8 })
+            STARTING_VILLAGE: Object.freeze({ x: 39, y: 34, direction: 8 }),
+            VILLAGE_WEST: Object.freeze({ x: 37, y: 34, direction: 6 }),
+            VILLAGE_EAST: Object.freeze({ x: 43, y: 32, direction: 4 }),
+            RETH_RETURN: Object.freeze({ x: 13, y: 34, direction: 4 }),
+            CLAY_RETURN: Object.freeze({ x: 66, y: 26, direction: 6 })
         })
     });
 
