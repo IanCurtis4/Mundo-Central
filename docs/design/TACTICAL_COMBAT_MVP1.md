@@ -108,7 +108,7 @@ Limpar arquitetura, documentar API e transformar o protótipo em fundação reut
 ## T00 — Documento e congelamento de escopo
 
 **Prioridade:** P0  
-**Status:** aguardando aceite.
+**Status:** aceito em 2026-09-28.
 
 T00 não instala plugins nem altera gameplay. Sua função é congelar o **menor experimento que consegue provar ou refutar a direção tática** antes de assumirmos dívida técnica.
 
@@ -235,47 +235,228 @@ Após o aceite, a única próxima tarefa autorizada é **T01 — auditoria e esc
 ## T01 — Auditoria e escolha do motor tático
 
 **Prioridade:** P0  
-**Dependências:** T00
+**Dependências:** T00  
+**Status:** auditoria concluída; aguardando aceite.
 
-Avaliar candidatos reais para MV, inicialmente:
+### Candidatos auditados
 
-- LeTBS;
-- Synrec Tactical Battle System, se compatível e com licença adequada ao fluxo;
-- SRPG Engine e alternativas open source relevantes.
+#### 1. SRPG Gear MV — escolhido para o spike
 
-### Verificar
+**Origem:** https://github.com/Ohisama-Craft/SRPG_GearMV  
+**Release de referência:** 1.24Q (2025-02-28)  
+**Commit pinado para o spike:** `a13a66d4e3b8dc1b772f30d45fc95e9f21e102fd`  
+**Licença dos plugins:** MIT.
 
-- RPG Maker MV 1.6.3;
-- dependências;
-- licença e redistribuição no repositório;
-- grid e movimentação;
-- AoE;
-- knockback/pull;
-- terrain tags ou Regions;
-- estados;
-- turn order;
-- hooks para IA;
-- possibilidade de auto battle;
-- battle events;
-- retorno ao mapa;
-- save/load;
-- conflitos com plugins atuais;
-- tamanho e qualidade do código;
-- atividade/manutenção do projeto.
+O SRPG Gear MV é uma evolução modular do SRPG Core para RPG Maker MV. O repositório contém, entre outros:
 
-### Entrega
+- `SRPG_core.js`;
+- `SRPG_AIControl.js`;
+- `SRPG_AoE.js`;
+- `SRPG_AuraSkill.js`;
+- `SRPG_BattlePrepare.js`;
+- `SRPG_PositionEffects.js`;
+- `SRPG_RangeControl.js`;
+- `SRPG_TerrainEffectPlus.js`;
+- plugins opcionais de UX, cursor, path preview, summons etc.
 
-Registrar neste documento:
+##### Por que combina com Mundo Central
 
-- candidato escolhido;
-- versão/commit;
-- por que foi escolhido;
-- riscos;
-- plano de rollback.
+**Terreno:** `SRPG_TerrainEffectPlus.js` aplica states por Terrain Tag, exatamente o tipo de primitiva que precisamos para Argila Viva, solo estável, névoa etc.
 
-### Aceite
+**Deslocamento:** o changelog atual do projeto documenta os helpers de `SRPG_PositionEffects`, inclusive operações como `a.push(b, distance, type)`. Portanto knockback/push já existe como extensão do ecossistema, em vez de precisarmos criar física de grid do zero.
 
-Escolhemos conscientemente uma fundação antes de instalá-la.
+**AoE e alcance:** o pacote possui módulos dedicados para AoE e controle de range.
+
+**IA extensível:** `SRPG_AIControl.js` trabalha por pontuação de ações, alvos e posições. A documentação do próprio plugin permite fórmulas como `<aiTarget: ...>` e `<aiMove: ...>`, inclusive pontuação baseada em distância, facing, regiões e flags. Isso é especialmente promissor para Ressonância: nossos Protocolos podem futuramente alimentar ou envolver esse scoring em vez de substituir todo o motor de IA.
+
+**Preparação pré-batalha:** `SRPG_BattlePrepare.js` já prevê uma fase de preparação e eventos `<type:prepare>`, explicitamente utilizáveis para abrir lojas ou outras ações. Não é ainda o nosso Ponto de Convergência, mas oferece uma primitiva muito próxima da economia fora da batalha que queremos para Ressonância.
+
+**Arquitetura aberta:** os plugins são JavaScript aberto e MIT. Isso permite mantê-los pinados, auditáveis e versionados no repositório, enquanto nossas extensões ficam numa camada `MC_*`.
+
+**Atualidade relativa:** a linha SRPG Gear MV chegou à versão 1.24Q em fevereiro de 2025 e teve atualizações significativas de terreno, push, AoE, preparação e correções durante 2024–2025. Não é um projeto com atualização semanal, mas é consideravelmente mais recente que LeTBS e o SRPG Core original.
+
+##### Riscos
+
+1. `SRPG_core.js` é grande e invasivo: aproximadamente 11,6 mil linhas. O sistema mexe profundamente em mapa, unidades, batalha e eventos.
+2. O ecossistema é modular, mas vários addons dependem uns dos outros; a ordem de plugins terá de ser documentada e testada.
+3. Parte da documentação histórica é japonesa, embora o projeto tenha adicionado ajuda em inglês aos plugins.
+4. O comportamento padrão foi pensado para um SRPG tradicional; **turno por lado, ordem livre, Condução e Ressonância continuam sendo responsabilidade da nossa camada**.
+5. Nosso `MC_Core` usa Region 1 como máscara de colisão global. O ecossistema SRPG também usa Regions/Terrain Tags para várias funções. Em T02/T03 teremos de separar namespaces ou tornar `MC.Regions.BLOCKED` contextual, para que um Region ID do mapa tático não seja tratado acidentalmente como parede de exploração.
+
+##### Hipótese de integração
+
+Não instalar o pacote inteiro de uma vez.
+
+A pilha inicial deve começar pelo menor núcleo necessário para abrir uma batalha SRPG e, após o boot ser aprovado, acrescentar módulos individualmente:
+
+1. `SRPG_core.js`;
+2. bridge nosso `MC_TacticalBridge.js`;
+3. depois, conforme as tarefas pedirem:
+   - `SRPG_AoE.js`;
+   - `SRPG_PositionEffects.js`;
+   - `SRPG_RangeControl.js`;
+   - `SRPG_AIControl.js`;
+   - `SRPG_AuraSkill.js` + `SRPG_TerrainEffectPlus.js`;
+   - `SRPG_BattlePrepare.js` somente quando preparação fizer parte do slice.
+
+Isso reduz a superfície de debugging.
+
+---
+
+#### 2. Synrec Tactical Battle System — melhor fallback funcional, não escolhido para o primeiro spike
+
+**Origem:** https://synrec.itch.io/rpg-maker-mz-tactical-battle-system  
+**Versão pública documentada:** 1.8.4 (2026-05-27), com página atualizada em setembro de 2026.  
+**Preço atual observado:** US$ 25.
+
+É o candidato pronto mais próximo da nossa feature list. A página oficial declara suporte MV/MZ e oferece:
+
+- mapas híbridos RPG/SRPG;
+- início de batalha por transferência para mapa;
+- free/forced battler placement;
+- Knockback, Suction, Swap e Teleport;
+- AoE e padrões de ataque;
+- contato por Terrain e Region;
+- auto battler AI configurável;
+- múltiplas condições de vitória/derrota;
+- retorno ao mapa anterior ou mapa configurado;
+- efeitos de Terrain Tag que alteram movimento, states, HP/MP e velocidade de turno.
+
+##### Por que não é a primeira escolha
+
+O problema não é capacidade; é **controle de dependência**.
+
+O plugin é pago e o código não está publicamente auditável antes da aquisição. As páginas públicas do autor para plugins pagos normalmente impõem restrições de redistribuição/compilação. Como Mundo Central está hoje num repositório GitHub de desenvolvimento, não devemos presumir que podemos commitar o arquivo comprado ou redistribuí-lo.
+
+Além disso, depender de uma biblioteca comercial que só um comprador pode baixar torna CI, colaboração, backup e onboarding mais delicados.
+
+##### Quando usar
+
+Se o SRPG Gear falhar no spike por incompatibilidade estrutural ou custo excessivo de adaptação, Synrec é o **fallback prioritário**. Nesse caso, antes de qualquer commit:
+
+1. adquirir legitimamente o plugin;
+2. ler os termos específicos incluídos no pacote;
+3. decidir se o arquivo precisa ficar fora do repositório público;
+4. testar o demo MV e a API de auto battler antes de integrar.
+
+---
+
+#### 3. LeTBS — tecnicamente interessante, mas legado
+
+**Origem:** https://github.com/LecodeMV/leTBS  
+**Documentação:** LeTBS 0.8  
+**Último commit do repositório auditado:** `bead523e7fbad76a0296f7c957edfeb68bad32d9` (2018-05-30).  
+**Licença:** termos próprios; permite uso comercial e não comercial em RPG Maker MV com crédito, permite edição, proíbe venda do plugin e pede contato em projeto comercial.
+
+LeTBS ainda tem uma arquitetura conceitualmente excelente:
+
+- grid;
+- scopes e AoE customizáveis;
+- sequences;
+- projéteis;
+- terrain/tile effects;
+- marks e auras;
+- summons;
+- battle eventing;
+- AI;
+- addon `LeTBS_AutoBattle.js`;
+- modo ativável/desativável, útil para um jogo híbrido.
+
+Ele é provavelmente o candidato com a linguagem de skills mais próxima do que imaginamos.
+
+##### Por que ficou atrás
+
+- repositório sem atualização desde 2018;
+- documentação principal atualizada pela última vez em 2019;
+- depende de EasyStar e de um conjunto próprio de módulos/assets;
+- licença menos simples que MIT;
+- risco maior de incompatibilidade e manutenção local permanente.
+
+Ele permanece como **fallback experimental**, não como fundação preferencial do MVP1.
+
+---
+
+#### 4. SRPG Core original — referência, não candidato principal
+
+**Origem:** https://github.com/RyanBram/SRPGcore  
+**Último commit auditado:** `d18176e4e22cd9312d72ebe6ee4f868d8fe25c3b` (2022-12-30).  
+**Licença:** MIT.
+
+O projeto tem justamente a filosofia de mudanças mínimas e extensibilidade, mas o SRPG Gear MV já agrega uma linha posterior de manutenção e vários módulos de que precisaríamos imediatamente. Portanto não existe vantagem clara em começar pelo core mais antigo.
+
+---
+
+### Matriz de decisão
+
+| Critério | SRPG Gear MV | Synrec TBS | LeTBS | SRPG Core |
+|---|---|---|---|---|
+| MV nativo | Sim | Sim | Sim | Sim |
+| Código auditável antes da instalação | **Sim** | Não | Sim | Sim |
+| Licença simples para versionar | **MIT** | Comercial/restrita | Termos próprios | MIT |
+| Atualidade | 2025 | **2026** | 2018/2019 | 2022 |
+| AoE | Sim | Sim | Sim | Extensões |
+| Push/pull | **Sim** | **Sim** | Possível via sequences | Extensões |
+| Terreno | **Sim** | **Sim** | **Sim** | Extensões |
+| IA configurável | **Sim, por scoring** | Sim | Sim | Básica/extensões |
+| Preparação pré-batalha | **Sim** | Configurável | Não é foco | Extensão |
+| Facilidade para Ressonância autoral | **Alta** | Potencialmente alta, mas caixa-preta | Média/alta | Média |
+| Risco de lock-in | **Baixo/médio** | Alto | Médio | Baixo |
+| Adequação ao repo atual | **Alta** | Baixa sem estratégia de licença | Média | Alta |
+
+### Decisão proposta de T01
+
+Usar **SRPG Gear MV 1.24Q**, pinado no commit:
+
+`a13a66d4e3b8dc1b772f30d45fc95e9f21e102fd`
+
+como fundação do spike M0.
+
+A decisão não significa instalar todos os addons nem assumir que o sistema inteiro chegará ao MVP1. Significa apenas que ele será o primeiro motor submetido ao teste de T02.
+
+### Plano de rollback
+
+T02 deverá ser um commit isolado.
+
+Se o projeto:
+
+- não inicializar de forma limpa;
+- quebrar exploração atual;
+- exigir edição invasiva do core third-party apenas para abrir uma arena;
+- ou mostrar conflito fundamental com o modelo híbrido,
+
+o commit de T02 será revertido por inteiro e o projeto voltará ao estado pré-SRPG.
+
+Nesse caso, o próximo spike será **Synrec TBS em ambiente de teste/licença apropriado**, sem introduzir silenciosamente um plugin proprietário no repositório.
+
+### Compatibilidade a observar em T02
+
+Os plugins próprios atuais têm superfície relativamente pequena:
+
+- `MC_TextWrap`: risco baixo, pois atua em `Window_Message`;
+- `MC_WorldMap`: risco baixo, pois cria uma scene própria e plugin command;
+- `MC_Core`: **risco moderado**, pois altera `Game_Map.prototype.isPassable` e reserva Region 1.
+
+Portanto o primeiro smoke test de T02 precisa incluir não apenas a arena tática, mas também:
+
+1. abrir Taverna/Vila/Veyru normalmente;
+2. verificar a colisão Region 1 no mapa regional;
+3. abrir/fechar o world map;
+4. confirmar transferências `MC_TRANSFER`;
+5. somente então abrir a arena SRPG.
+
+### Fontes da auditoria
+
+- SRPG Gear MV: https://ohisamacraft.nyanta.jp/srpg_gear_mv.html
+- SRPG Gear MV GitHub: https://github.com/Ohisama-Craft/SRPG_GearMV
+- LeTBS GitHub: https://github.com/LecodeMV/leTBS
+- LeTBS docs: https://lecodemv.github.io/leTBS/
+- Synrec TBS: https://synrec.itch.io/rpg-maker-mz-tactical-battle-system
+- SRPG Core: https://github.com/RyanBram/SRPGcore
+
+### Critério de saída de T01
+
+T01 é aceito quando concordarmos em usar **SRPG Gear MV** como primeiro candidato, mantendo Synrec como fallback e sem instalar nada até o aceite.
+
 
 ---
 
