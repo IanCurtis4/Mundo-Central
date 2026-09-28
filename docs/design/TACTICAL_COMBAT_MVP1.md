@@ -108,7 +108,66 @@ Limpar arquitetura, documentar API e transformar o protótipo em fundação reut
 ## T00 — Documento e congelamento de escopo
 
 **Prioridade:** P0  
-**Status:** feito com este arquivo.
+**Status:** aguardando aceite.
+
+T00 não instala plugins nem altera gameplay. Sua função é congelar o **menor experimento que consegue provar ou refutar a direção tática** antes de assumirmos dívida técnica.
+
+### Escopo congelado do experimento
+
+O primeiro slice de combate terá estas propriedades:
+
+- **um único encounter autoral:** `VEYRU_CLAY_01`;
+- **um único mapa de arena**, separado do mapa regional de Veyru;
+- **quatro membros da party** controláveis;
+- **três inimigos**;
+- **grid ortogonal baseado nos tiles do MV**;
+- **turnos por lado** como hipótese inicial: party age, depois inimigos;
+- dentro do turno da party, **ordem livre entre os quatro personagens** se o motor escolhido permitir sem reescrita desproporcional;
+- **movimento + skill + encerrar ação** como conjunto mínimo de comandos;
+- **três famílias de terreno:** pradaria, Argila Viva e obstáculo/rocha;
+- **duas condições de combate** no mínimo;
+- **um efeito de deslocamento forçado**;
+- **um combo emergente obrigatório:** preparar estado → deslocar → explorar terreno;
+- vitória inicial por **derrotar os três inimigos**;
+- entrada a partir de Veyru e retorno ao mesmo fluxo de exploração;
+- duração pretendida de **3–6 minutos** quando o jogador já conhece as regras.
+
+### Relação entre Condução e Ressonância
+
+O protótipo será construído sobre a seguinte decisão arquitetural:
+
+> **Existe um único sistema de combate e duas formas de decidir ações.**
+
+**Condução** é a primeira interface a ser implementada e validada.  
+**Ressonância** será implementada somente depois que o mesmo encounter estiver estável em Condução.
+
+Ressonância deve reaproveitar:
+
+- unidades;
+- skills;
+- estados;
+- grid;
+- terreno;
+- targeting;
+- dano;
+- regras de vitória/derrota.
+
+Ela poderá substituir a decisão manual por protocolos, scoring e preparação, mas não possuirá uma segunda implementação de combate.
+
+### O que o primeiro encounter precisa provar
+
+O experimento é aprovado mecanicamente se conseguirmos observar, numa batalha curta, que:
+
+1. **posição muda decisões**;
+2. **terreno muda decisões**;
+3. uma ação utilitária pode ser melhor do que a skill de maior dano;
+4. um personagem consegue **preparar uma oportunidade** que outro explora;
+5. controlar quatro personagens não torna cada turno excessivamente lento;
+6. a transição exploração → arena → exploração parece parte do mesmo jogo.
+
+Se o combate só funcionar porque adicionamos muitas exceções específicas para `VEYRU_CLAY_01`, o experimento falhou arquiteturalmente mesmo que a luta funcione.
+
+### O que explicitamente não será resolvido em T00–M2
 
 Não entram ainda:
 
@@ -116,19 +175,60 @@ Não entram ainda:
 - line of sight avançada;
 - fog of war;
 - cobertura complexa;
+- facing como subsistema obrigatório;
 - dezenas de estados;
 - summons;
 - destruição de cenário;
 - multiplayer;
 - IA estratégica complexa;
 - encounters procedurais;
+- geração procedural de arenas;
 - balanceamento final;
 - UI final;
-- animações finais.
+- animações finais;
+- economia completa de Ressonância;
+- loja ou reroll dentro da batalha;
+- sistema completo de rituais;
+- Ponto de Convergência definitivo;
+- integração das 25 quests de Revin/Manum;
+- escolha definitiva sobre save durante combate.
 
-### Aceite
+### Restrições técnicas congeladas
 
-Este documento representa corretamente a direção desejada.
+- O projeto-alvo continua sendo **RPG Maker MV 1.6.3**.
+- Não converter o projeto para MZ para obter o sistema tático.
+- Código third-party deve permanecer identificável e substituível.
+- Integrações específicas de Mundo Central devem preferir uma camada `MC_*`.
+- Não editar diretamente um plugin third-party para implementar feature autoral enquanto um adapter/hook for razoável.
+- Não quebrar o fluxo atual de exploração, transferências, world map e soft gates.
+- IDs de mapas, skills e eventos não devem se tornar API pública do nosso código quando pudermos usar chaves semânticas.
+- A escolha do plugin em T01 precisa considerar desde o início a futura IA de Ressonância; não basta “ter grid”.
+
+### Decisões deliberadamente abertas para prototipagem
+
+T00 **não** congela estes números/regras:
+
+- tamanho exato da arena dentro de 10x10–16x16;
+- número de PA;
+- distância de movimento;
+- fórmula de dano;
+- iniciativa final;
+- reações no primeiro encounter;
+- facing;
+- cobertura;
+- save durante batalha.
+
+Essas decisões só serão congeladas quando tivermos evidência prática.
+
+### Critério de saída de T00
+
+T00 está aceito quando concordarmos que:
+
+- este é o menor experimento útil;
+- nada essencial ao conceito foi deixado de fora;
+- nada que pertence a uma fase posterior foi puxado prematuramente para o protótipo.
+
+Após o aceite, a única próxima tarefa autorizada é **T01 — auditoria e escolha do motor tático**.
 
 ---
 
