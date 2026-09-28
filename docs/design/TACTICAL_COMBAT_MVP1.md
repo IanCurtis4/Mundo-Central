@@ -236,7 +236,7 @@ Após o aceite, a única próxima tarefa autorizada é **T01 — auditoria e esc
 
 **Prioridade:** P0  
 **Dependências:** T00  
-**Status:** auditoria concluída; aguardando aceite.
+**Status:** aceito em 2026-09-28.
 
 ### Candidatos auditados
 
@@ -289,7 +289,7 @@ Não instalar o pacote inteiro de uma vez.
 
 A pilha inicial deve começar pelo menor núcleo necessário para abrir uma batalha SRPG e, após o boot ser aprovado, acrescentar módulos individualmente:
 
-1. `SRPG_core.js`;
+1. base obrigatória: `SRPG_core.js` + `SRPG_AoE.js` + `SRPG_RangeControl.js`;
 2. bridge nosso `MC_TacticalBridge.js`;
 3. depois, conforme as tarefas pedirem:
    - `SRPG_AoE.js`;
@@ -463,34 +463,92 @@ T01 é aceito quando concordarmos em usar **SRPG Gear MV** como primeiro candida
 ## T02 — Instalação mínima e isolamento
 
 **Prioridade:** P0  
-**Dependências:** T01
+**Dependências:** T01  
+**Status:** implementado; aguardando smoke test/aceite.
 
-Instalar somente o necessário para inicializar o motor.
+### Base instalada
 
-### Regras
+Pin upstream: `a13a66d4e3b8dc1b772f30d45fc95e9f21e102fd`.
 
-- preservar os plugins atuais;
-- registrar ordem de carregamento;
-- não substituir sistemas do projeto silenciosamente;
-- manter alterações de terceiros separadas das extensões de Mundo Central;
-- preferir adaptadores MC_* em vez de editar diretamente código third-party.
+A instalação mínima real é:
 
-### Arquivos esperados
+- `SRPG_core.js`;
+- `SRPG_AoE.js`;
+- `SRPG_RangeControl.js`.
 
-Dependendo da escolha:
+Os três foram copiados sem alterações. O core declara AoE e RangeControl como
+dependências obrigatórias.
 
-- plugin(s) de terceiros em js/plugins/;
-- atualização de js/plugins.js;
-- js/plugins/MC_TacticalBridge.js para integração própria;
-- documentação da versão instalada.
+Assets obrigatórios:
 
-### Teste
+- `img/characters/!srpg_set_type1.png`;
+- `img/system/srpgPath.png`.
 
-Abrir o jogo sem erros e entrar numa arena de teste vazia.
+Proveniência: `docs/third_party/SRPG_GEAR_MV.md`.
 
-### Aceite
+### Isolamento
 
-O projeto inicia normalmente e o motor tático está isolado.
+Criado `MC_TacticalBridge.js`. Neste estágio ele é somente harness de
+desenvolvimento; T03 criará a API semântica definitiva.
+
+Em playtest, **F6** entra no Map004 e F6 novamente encerra SRPG e retorna ao
+ponto anterior. O atalho é inerte fora do modo de teste.
+
+### Smoke map
+
+Criado `Map004 — [DEV] Spike Tático T02`, contendo apenas piso passável,
+um `<type:actor><id:1>` e um bootstrap de `SRPGBattle Start`.
+
+Não há inimigo, vitória ou gameplay autoral por decisão de escopo.
+
+### IDs reservados
+
+- Switch 91: SRPG ativo;
+- Variables 91–96: atores, inimigos, turno, active event, target event e distância.
+
+### Configuração conservadora
+
+- map battle sempre ativo;
+- ataque duplo por AGI desligado;
+- counter/reaction padrão desligado;
+- Auto Battle padrão desabilitado/removido do menu;
+- cursor: `!srpg_set_type1`.
+
+São escolhas de smoke test, não balanceamento final.
+
+### Smoke test para aceite
+
+1. Pull da branch e abrir no RPG Maker MV 1.6.3.
+2. Iniciar Playtest normalmente.
+3. Confirmar Taverna/Vila/Veyru.
+4. Em Veyru, confirmar que Region 1 continua bloqueando o fechamento do mapa.
+5. Confirmar que world map e `MC_TRANSFER` continuam funcionando.
+6. Pressionar **F6**.
+7. Confirmar entrada em `[DEV] Spike Tático T02`.
+8. Confirmar cursor SRPG e Haroldo selecionável.
+9. Selecionar Haroldo e fazer pelo menos um movimento no grid.
+10. Pressionar **F6** novamente.
+11. Confirmar retorno ao mapa e posição de origem.
+
+### Validações estáticas
+
+- três plugins upstream compilam como JavaScript;
+- `MC_TacticalBridge.js` e `plugins.js` compilam;
+- Map004, MapInfos e System permanecem JSON válidos;
+- plugin e assets usam o mesmo pin upstream.
+
+### Limitações conhecidas
+
+- runtime final precisa ser validado no RPG Maker local;
+- Map004 não tem inimigo/vitória/derrota;
+- contrato de encounter é T03;
+- arena real é T04;
+- Region 1 não é usado no smoke map; namespace tático de terreno será tratado
+  após validar o motor.
+
+### Critério de saída
+
+T02 é aceito quando o smoke test passa sem regressão da exploração.
 
 ---
 
