@@ -474,10 +474,14 @@ A instalação mínima real é:
 
 - `SRPG_core.js`;
 - `SRPG_AoE.js`;
-- `SRPG_RangeControl.js`.
+- `SRPG_RangeControl.js`;
+- `SRPG_PositionEffects.js`.
 
-Os três foram copiados sem alterações. O core declara AoE e RangeControl como
-dependências obrigatórias.
+Os quatro foram copiados sem alterações. O core declara AoE e RangeControl como
+dependências obrigatórias. O smoke test encontrou uma dependência funcional
+adicional: o core 1.24Q chama `isForcedMovement()`/`setForcedMovement()`,
+métodos definidos apenas por PositionEffects neste pin. Por isso ele passa a
+fazer parte da base mínima de T02.
 
 Assets obrigatórios:
 
@@ -537,9 +541,24 @@ São escolhas de smoke test, não balanceamento final.
 - Map004, MapInfos e System permanecem JSON válidos;
 - plugin e assets usam o mesmo pin upstream.
 
+### Correção após primeiro smoke test
+
+O primeiro teste conseguiu inicializar e selecionar a unidade, mas ao executar
+uma ação ocorreu:
+
+    TypeError: event.isForcedMovement is not a function
+
+A causa foi localizada no upstream: `SRPG_core.js` usa a API de movimento
+forçado, mas o módulo que a define (`SRPG_PositionEffects.js`) era classificado
+como recomendado. O módulo foi adicionado sem modificação e o bridge agora
+verifica explicitamente essa API.
+
+Os termos próprios do SRPG que caíam nos defaults japoneses também foram
+configurados em português no `plugins.js`.
+
 ### Limitações conhecidas
 
-- runtime final precisa ser validado no RPG Maker local;
+- runtime corrigido precisa ser revalidado no RPG Maker local;
 - Map004 não tem inimigo/vitória/derrota;
 - contrato de encounter é T03;
 - arena real é T04;

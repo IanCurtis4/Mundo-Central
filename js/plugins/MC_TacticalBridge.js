@@ -45,6 +45,9 @@ var MC = MC || {};
             typeof Game_Temp.prototype.clearArea === 'function' &&
             typeof Game_Map !== 'undefined' &&
             typeof Game_Map.prototype.srpgHasLoS === 'function' &&
+            typeof Game_Character !== 'undefined' &&
+            typeof Game_Character.prototype.isForcedMovement === 'function' &&
+            typeof Game_Character.prototype.setForcedMovement === 'function' &&
             typeof $gameSystem !== 'undefined' &&
             $gameSystem &&
             typeof $gameSystem.isSRPGMode === 'function'

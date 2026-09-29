@@ -14,12 +14,22 @@
 - `js/plugins/SRPG_core.js`
 - `js/plugins/SRPG_AoE.js`
 - `js/plugins/SRPG_RangeControl.js`
+- `js/plugins/SRPG_PositionEffects.js`
 - `img/characters/!srpg_set_type1.png`
 - `img/system/srpgPath.png`
 
 O próprio `SRPG_core.js` 1.24Q declara **SRPG_AoE** e
-**SRPG_RangeControl** como plugins obrigatórios. T02 instala os três como
-base mínima.
+**SRPG_RangeControl** como plugins obrigatórios.
+
+O primeiro smoke test revelou ainda uma dependência funcional não documentada:
+`SRPG_core.js` chama `event.isForcedMovement()` e
+`event.setForcedMovement(false)` ao concluir ações, mas esses métodos são
+definidos por `SRPG_PositionEffects.js`, listado upstream apenas como
+"recommended". Para este pin, PositionEffects é portanto tratado como
+**dependência de facto** da base instalada.
+
+Isso também é coerente com Mundo Central, pois PositionEffects será a primitiva
+de push/pull/teleport usada mais tarde.
 
 Não editar os plugins third-party para funcionalidades de Mundo Central.
 Extensões autorais devem ficar em plugins `MC_*` sempre que possível.
